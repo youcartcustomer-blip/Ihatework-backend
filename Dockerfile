@@ -3,7 +3,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 RUN pip install --no-cache-dir \
-    fastapi uvicorn[standard] pydantic pydantic-settings httpx requests \
+    fastapi uvicorn[standard] pydantic pydantic-settings httpx requests python-multipart \
     sqlalchemy "python-jose[cryptography]" "passlib[bcrypt]" stripe email-validator
 
 COPY main.py .
