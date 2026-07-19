@@ -270,12 +270,12 @@ async def get_next_pending_actions(current_user: UserModel = Depends(get_current
 @app.post("/api/approve/{action_id}")
 async def approve_and_dispatch(action_id: str, approval: ReviewApproval, current_user: UserModel = Depends(get_current_user)):
     with state_lock:
+        global review_queue
         target = next((a for a in review_queue if a.get("action_id") == action_id), None)
         if not target:
             raise HTTPException(status_code=404, detail="Action not found.")
         if target.get("tenant_id") != current_user.tenant_id:
             raise HTTPException(status_code=403, detail="This action does not belong to your tenant.")
-        global review_queue
         review_queue = [a for a in review_queue if a.get("action_id") != action_id]
     return {"status": "success", "executed_action": action_id}
 
