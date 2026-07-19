@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+echo "Adding per-IP rate limiting (slowapi) to abuse-prone/costly endpoints..."
+cat > main.py << 'MAIN_PY_EOF_MARKER'
 """
 Ihatework — Unified Marketing & Growth Operations API
 
@@ -1633,3 +1637,9 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
+MAIN_PY_EOF_MARKER
+echo "Committing and pushing..."
+git add -A
+git commit -m "Add per-IP rate limiting (slowapi) to login, registration, and costly/public endpoints"
+git push
+echo "Done!"
