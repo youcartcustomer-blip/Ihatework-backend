@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+echo "Fixing NameError: reordering auth/DB setup before its first use..."
+cat > main.py << 'MAIN_PY_EOF_MARKER'
 """
 Ihatework — Unified Marketing & Growth Operations API
 
@@ -1608,3 +1612,9 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
+MAIN_PY_EOF_MARKER
+echo "Committing and pushing..."
+git add -A
+git commit -m "Fix NameError: move auth/DB setup before review-queue routes that need it at load time"
+git push
+echo "Done!"
