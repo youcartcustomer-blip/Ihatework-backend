@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+echo "Making email verification non-blocking by default (toggle: REQUIRE_EMAIL_VERIFICATION)..."
+cat > main.py << 'MAIN_PY_EOF_MARKER'
 """
 Ihatework — Unified Marketing & Growth Operations API
 
@@ -1786,3 +1790,9 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
+MAIN_PY_EOF_MARKER
+echo "Committing and pushing..."
+git add -A
+git commit -m "Make email verification non-blocking by default (REQUIRE_EMAIL_VERIFICATION toggle)"
+git push
+echo "Done!"
