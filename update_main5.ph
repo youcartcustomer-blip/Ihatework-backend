@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-echo "Fixing NameError: reordering auth/DB setup before its first use..."
+echo "Fixing SyntaxError: global review_queue used before declaration..."
 cat > main.py << 'MAIN_PY_EOF_MARKER'
 """
 Ihatework — Unified Marketing & Growth Operations API
@@ -475,8 +475,7 @@ async def approve_and_dispatch(action_id: str, approval: ReviewApproval, current
             raise HTTPException(status_code=404, detail="Action not found.")
         if target.get("tenant_id") != current_user.tenant_id:
             raise HTTPException(status_code=403, detail="This action does not belong to your tenant.")
-        global review_queue
-        review_queue = [a for a in review_queue if a.get("action_id") != action_id]
+        review_queue.remove(target)
     return {"status": "success", "executed_action": action_id}
 
 @app.delete("/api/reject/{action_id}")
@@ -487,8 +486,7 @@ async def discard_action(action_id: str, current_user: UserModel = Depends(get_c
             raise HTTPException(status_code=404, detail="Action not found.")
         if target.get("tenant_id") != current_user.tenant_id:
             raise HTTPException(status_code=403, detail="This action does not belong to your tenant.")
-        global review_queue
-        review_queue = [a for a in review_queue if a.get("action_id") != action_id]
+        review_queue.remove(target)
     return {"status": "success", "discarded_action": action_id}
 
 @app.post("/api/webhook/incoming")
@@ -1615,6 +1613,6 @@ if __name__ == "__main__":
 MAIN_PY_EOF_MARKER
 echo "Committing and pushing..."
 git add -A
-git commit -m "Fix NameError: move auth/DB setup before review-queue routes that need it at load time"
+git commit -m "Fix SyntaxError: mutate review_queue in place instead of global reassignment"
 git push
 echo "Done!"
