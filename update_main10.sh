@@ -1,3 +1,7 @@
+#!/bin/bash
+set -e
+echo "Securing /api/proxy/claude: was fully open (no auth, no rate limit)..."
+cat > main.py << 'MAIN_PY_EOF_MARKER'
 """
 Ihatework — Unified Marketing & Growth Operations API
 
@@ -1841,3 +1845,9 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
+MAIN_PY_EOF_MARKER
+echo "Committing and pushing..."
+git add -A
+git commit -m "Secure /api/proxy/claude with auth + rate limit; split internal helper from HTTP route"
+git push
+echo "Done!"
